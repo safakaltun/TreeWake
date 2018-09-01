@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>LASCAR-positions.kmz</name>
+	<Style id="failed">
+	</Style>
+	<StyleMap id="m_ylw-pushpin0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="failed0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed19</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed27</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed1">
+	</Style>
+	<Style id="failed2">
+	</Style>
+	<Style id="s_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="failed3">
+	</Style>
+	<StyleMap id="failed4">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed5</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed20</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed5">
+	</Style>
+	<Style id="failed6">
+	</Style>
+	<Style id="s_ylw-pushpin_hl">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="failed7">
+	</Style>
+	<StyleMap id="failed8">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed9</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed2</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed9">
+	</Style>
+	<Style id="failed10">
+	</Style>
+	<StyleMap id="failed11">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed7</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed18</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed12">
+	</Style>
+	<StyleMap id="failed13">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed16</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed6</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed14">
+	</Style>
+	<StyleMap id="failed15">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed25</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed16">
+	</Style>
+	<StyleMap id="failed17">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed26</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed12</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed18">
+	</Style>
+	<Style id="failed19">
+	</Style>
+	<Style id="failed20">
+	</Style>
+	<StyleMap id="failed21">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed10</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed23</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="failed22">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed24</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="failed23">
+	</Style>
+	<Style id="failed24">
+	</Style>
+	<Style id="failed25">
+	</Style>
+	<Style id="failed26">
+	</Style>
+	<Style id="failed27">
+	</Style>
+	<StyleMap id="failed28">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#failed3</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#failed14</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Folder>
+		<name>LASCAR</name>
+		<open>1</open>
+		<Placemark>
+			<name>Sterenn</name>
+			<styleUrl>#failed28</styleUrl>
+			<Point>
+				<coordinates>12.09755427649285,55.6863638322539,47</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>V52 mast</name>
+			<styleUrl>#failed15</styleUrl>
+			<Point>
+				<coordinates>12.09579952514761,55.68663694302957,43.86682199999999</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Tall mast</name>
+			<styleUrl>#failed17</styleUrl>
+			<Point>
+				<coordinates>12.08831498160805,55.69419961397903,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Old Vara</name>
+			<styleUrl>#failed0</styleUrl>
+			<Point>
+				<coordinates>12.09650140625442,55.6842533292194,47</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Koshava</name>
+			<styleUrl>#failed13</styleUrl>
+			<Point>
+				<coordinates>12.08845410026029,55.69404110196699,43.751368</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Vara</name>
+			<styleUrl>#failed22</styleUrl>
+			<Point>
+				<coordinates>12.10125602114705,55.69160238836181,52.608523</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Sirocco</name>
+			<styleUrl>#failed4</styleUrl>
+			<Point>
+				<coordinates>12.10046038676306,55.68923730393722,58.118442</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Whittle</name>
+			<styleUrl>#failed11</styleUrl>
+			<Point>
+				<coordinates>12.09947936617265,55.68937592845302,51.916026</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Brise</name>
+			<styleUrl>#failed8</styleUrl>
+			<Point>
+				<coordinates>12.10076295092849,55.68901971412151,50.311162</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>313</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<longitude>12.1001450071199</longitude>
+				<latitude>55.68939494063439</latitude>
+				<altitude>0</altitude>
+				<heading>11.47024112185869</heading>
+				<tilt>29.99935961457209</tilt>
+				<range>266.7000160497792</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>12.10044184213894,55.68927282406097,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Water level</name>
+			<styleUrl>#failed21</styleUrl>
+			<Point>
+				<coordinates>12.09518373548174,55.68871694471017,37.464205</coordinates>
+			</Point>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>
