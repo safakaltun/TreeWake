@@ -528,8 +528,9 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                     Obj.currentStatDeg = 1;
                 end
                 
-                
+                try
                 Obj.draw_polar_plot;
+                end
                 pause(1/10);
             end
         end
@@ -544,7 +545,9 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             if Obj.currentStatDeg < length(Obj.wakeChar_dir.bin)
                 Obj.currentStatDeg = Obj.currentStatDeg + 1;
             end
+            try
             Obj.draw_polar_plot;
+            end
         end
         function last_time(varargin)
             Obj = varargin{1};
@@ -671,7 +674,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             view(Obj.ax6,[0 90])
             daspect(Obj.ax6,[0.01  0.01 5])
 xlabel(Obj.ax6,'Easting [km]')
-ylabel(Obj.ax6,'Norting [km]')
+ylabel(Obj.ax6,'Northing [km]')
 cb =colorbar(Obj.ax6,'Location','east','AxisLocation','out') ;
 cb.Label.String = 'Wind Speed [Normalized]';
 
@@ -738,7 +741,7 @@ cb.Label.String = 'Wind Speed [Normalized]';
                 title(['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, Ind = ' num2str(Obj.currentStatDeg)]);
                 hold('off')
                 legend('6H','10H','15H','20H','30H')
-                figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Bin_' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '_' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '_' num2str(Obj.currentStatDeg)]);
+                figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Bin_' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '_' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '_' num2str(Obj.currentStatDeg)]);
                 print('-f1001',figName,'-depsc')
                 print('-f1001',figName,'-djpeg')
                end
@@ -935,7 +938,7 @@ cb.Label.String = 'Wind Speed [Normalized]';
                 plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b');
                 
                 %                 fig = figure(1001);
-                %                 sub = subplot(2,1,2)
+                sub = subplot(2,1,2)
                 sub.Color = 'none';
                 hold('on')
                 plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-b')
@@ -943,10 +946,21 @@ cb.Label.String = 'Wind Speed [Normalized]';
                 plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':b')
                 plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.b')
                 plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+b')
-                title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
+                grid on
+                title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ind = ' num2str(Obj.currentStatTime)]);
                 hold('off')
-                h =  legend(num2str(cell2mat(num2cell(dist)')))
-                legend(Obj.ax6,Obj.ax6.Children(end-1:-5:end-20),{'Top Half','Bottom Half','All','Mast'})
+                h =  legend(sub,{'6H' '10H' '15H' '20H' '30H'},'Location','southeast');
+                
+                xlabel(sub,'Axial Distance from the Center of Tree [H: Tree Height]')
+                ylabel(sub,'Wind Speed [Normalized]')
+                legend(Obj.ax6,Obj.ax6.Children(end-1:-5:end-20),{'Case 1','Case 2','Case 3','Mast'},'Location','southeast')
+            header =  [datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ri_{B} = ' num2str(Obj.mastDat.Data.Ri1870.value(minDif),'%2.10f') ', TI = ' num2str(Obj.mastDat.Data.TI_18m.value(minDif))];
+                title(Obj.ax6,header)
+
+               
+                figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Time_10min_' num2str(Obj.currentStatTime)]);
+                print('-f1001',figName,'-depsc')
+                print('-f1001',figName,'-djpeg')
             %%
             h(1) = plot(Obj.ax11,[0; vert_profile(:,2)],[0 ;vert_profile(:,1)],'DisplayName','Wind Speed');
             

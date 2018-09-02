@@ -83,6 +83,8 @@ classdef LASCAR_Processed < LASCAR_Raw
             %% All
             intVelRad = reshape(Obj.velRad,30,[],197);
             Obj.wakeChar = squeeze(mean(intVelRad,2));
+            rmInd = squeeze(squeeze(sum(intVelRad==0,2))>size(intVelRad,2)*0.4);
+            Obj.wakeChar(rmInd) = NaN;
             azimuths = reshape(Obj.angAzm,30,[]);
             %% 10 Min
             tenMin = 1/24/6;
