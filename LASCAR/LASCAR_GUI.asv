@@ -692,7 +692,6 @@ cb.Label.String = 'Wind Speed [Normalized]';
         end
         function draw_info(varargin)
             Obj = varargin{1};
-            range = (5:-0.25:-5).*19;
                if Obj.wakeStatCheckOff.Value
                 angle = Obj.wakeChar_dir.meanAngle(Obj.currentStatDeg);
                 
@@ -702,6 +701,7 @@ cb.Label.String = 'Wind Speed [Normalized]';
                 
                 cPts =(cPts+tree)./1E3;
                 
+                range = (-5:0.25:5).*19;
                 
                 bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
                 hold(Obj.ax1,'on')
@@ -733,14 +733,11 @@ cb.Label.String = 'Wind Speed [Normalized]';
                 plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':k')
                 plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.k')
                 plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+k')
-                xlabel('Axial Distance from the Center of Tree [H: Tree Height]')
+                xlabel('Axial Distance from the Center of Tree [Tree Height(H)]')
                 ylabel('Wind Speed [Normalized]')
                 title(['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, Ind = ' num2str(Obj.currentStatDeg)]);
                 hold('off')
                 legend('6H','10H','15H','20H','30H')
-                figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Bin_' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '_' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '_' num2str(Obj.currentStatDeg)]);
-                print('-f1001',figName,'-depsc')
-                print('-f1001',figName,'-djpeg')
                end
                try
             [~,minDif]=min(abs(Obj.mastDat.Data.Time.value-Obj.scanDate));
@@ -792,6 +789,7 @@ cb.Label.String = 'Wind Speed [Normalized]';
                 
                 cPts =(cPts+tree)./1E3;
                 
+                range = (-5:0.25:5).*19;
                 
                 bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
                 hold(Obj.ax1,'on')

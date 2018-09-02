@@ -169,12 +169,12 @@ classdef LASCAR_Processed < LASCAR_Raw
             velocity = Obj.wakeChar_10min.dirValue1530(range,:);
             interv = sshist(velocity);
             bounds = linspace(220,320,interv-1);
-            legendColor = cool(interv);
+            legendColor = hot(interv);
             
             for i = 1:15
                 velocityone = velocity(i,:);
                 interval =  (arrayfun(@(L,U) find(not(abs(sign(sign(L - velocityone) + sign(U - velocityone))))==1),[-Inf bounds],[bounds Inf],'uni',false));
-                %                 interval(cellfun(@isempty,interval)) = [];
+                interval(cellfun(@isempty,interval)) = [];
                 for iInt = 1:size(interval,2)
                     colors(interval{iInt},i,:) = repmat(legendColor(iInt,:),size(interval{iInt},2),1);
                 end
@@ -227,19 +227,19 @@ classdef LASCAR_Processed < LASCAR_Raw
             sp4.XAxis.TickLabelRotation = 45;
             view(sp4,[0 90])
             Obj.wakeChar_10min.dirValue1530 = mean(Obj.wakeChar_10min.dirValue1530(range,:),1);
-            cb = colorbar(sp4,'Location','south','TickDirection','in','AxisLocation','in');
-            caxis(sp4,[220 320])
+                        cb = colorbar(sp4,'Location','south','TickDirection','in','AxisLocation','in');
+                      caxis(sp4,[220 320])
             colormap(sp4,legendColor)
             xlabel(sp4,'Date')
             ylabel(sp4,'Distance from Scanner [m]')
             zlabel(sp4,'Wind Direction [\circ]')
-            clear colors velocity interval bounds legendColor
+            clear colors velocity interval bounds legendColor 
             grid(sp2,'off')
             grid(sp4,'off')
             print(fig,'Top','-depsc')
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_97');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+                print(fig,figName,'-depsc')
+                print(fig,figName,'-djpeg')
             %% Direction Based
             fig = figure(98);
             fig.Position= [412 89 1083 760];
@@ -255,12 +255,12 @@ classdef LASCAR_Processed < LASCAR_Raw
             velocity = Obj.wakeChar_10min.dirValue212(range,:);
             interv = sshist(velocity);
             bounds = linspace(220,320,interv-1);
-            legendColor = cool(interv);
+            legendColor = hot(interv);
             
             for i = 1:24
                 velocityone = velocity(i,:);
                 interval =  (arrayfun(@(L,U) find(not(abs(sign(sign(L - velocityone) + sign(U - velocityone))))==1),[-Inf bounds],[bounds Inf],'uni',false));
-                %                 interval(cellfun(@isempty,interval)) = [];
+                interval(cellfun(@isempty,interval)) = [];
                 for iInt = 1:size(interval,2)
                     colors(interval{iInt},i,:) = repmat(legendColor(iInt,:),size(interval{iInt},2),1);
                 end
@@ -310,7 +310,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             sp4.XAxis.TickLabels = datestr(sp4.XAxis.TickValues,'dd/mm HH:MM');
             sp4.XAxis.TickLabelRotation = 45;
             view(sp4,[0 90])
-            caxis(sp4,[220 320])
+                      caxis(sp4,[220 320])
             colormap(sp4,legendColor)
             xlabel(sp4,'Date')
             ylabel('Distance from Scanner [m]')
@@ -323,10 +323,10 @@ classdef LASCAR_Processed < LASCAR_Raw
             grid(sp2,'off')
             grid(sp4,'off')
             Obj.wakeChar_10min.dirValue212 = mean(Obj.wakeChar_10min.dirValue212(range,:),1);
-            clear colors velocity interval bounds legendColor
-            figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_98');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+            clear colors velocity interval bounds legendColor 
+                        figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_98');
+                print(fig,figName,'-depsc')
+                print(fig,figName,'-djpeg')
             %% Direction Based
             fig = figure(99);
             fig.Position= [412 89 1083 760];
@@ -334,7 +334,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             sp2 = subplot(2,2,2);
             sp3 = subplot(2,2,3);
             sp4 = subplot(2,2,4);
-            range = 79:102;
+             range = 79:102;
             
             intAll = Obj.wakeChar_10min.dirValueall;
             intAll(range,:) = NaN;
@@ -342,12 +342,12 @@ classdef LASCAR_Processed < LASCAR_Raw
             velocity = Obj.wakeChar_10min.dirValueall(range,:);
             interv = sshist(velocity);
             bounds = linspace(220,320,interv-1);
-            legendColor = cool(interv);
+            legendColor = hot(interv);
             
             for i = 1:24
                 velocityone = velocity(i,:);
                 interval =  (arrayfun(@(L,U) find(not(abs(sign(sign(L - velocityone) + sign(U - velocityone))))==1),[-Inf bounds],[bounds Inf],'uni',false));
-                %                 interval(cellfun(@isempty,interval)) = [];
+                interval(cellfun(@isempty,interval)) = [];
                 for iInt = 1:size(interval,2)
                     colors(interval{iInt},i,:) = repmat(legendColor(iInt,:),size(interval{iInt},2),1);
                 end
@@ -382,7 +382,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             
             
             
-            sf = surf(sp3,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.dirValueall(range,:),permute(colors,[2 1 3]));
+                        sf = surf(sp3,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.dirValueall(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
             sp3.XAxis.TickLabels = datestr(sp3.XAxis.TickValues,'dd/mm HH:MM');
             sp3.XAxis.TickLabelRotation = 45;
@@ -392,12 +392,12 @@ classdef LASCAR_Processed < LASCAR_Raw
             zlabel(sp3,'Wind Direction [\circ]')
             
             
-            sf = surf(sp4,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.dirValueall(range,:),permute(colors,[2 1 3]));
+             sf = surf(sp4,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.dirValueall(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
             sp4.XAxis.TickLabels = datestr(sp4.XAxis.TickValues,'dd/mm HH:MM');
             sp4.XAxis.TickLabelRotation = 45;
             view(sp4,[0 90])
-            caxis(sp4,[220 320])
+                      caxis(sp4,[220 320])
             colormap(sp4,legendColor)
             xlabel(sp4,'Date')
             ylabel('Distance from Scanner [m]')
@@ -410,9 +410,9 @@ classdef LASCAR_Processed < LASCAR_Raw
             %             cb.Position(4) = 0.02;
             grid(sp2,'off')
             grid(sp4,'off')
-            figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_99');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+                        figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_99');
+                print(fig,figName,'-depsc')
+                print(fig,figName,'-djpeg')
             Obj.wakeChar_10min.dirValueall = mean(Obj.wakeChar_10min.dirValueall(range,:),1);
         end
         function pc = plotter(Obj,inp)
