@@ -13,6 +13,7 @@ classdef (Abstract) LASCAR_Data < matlab.mixin.SetGet
         gateRange
         wakeChar
         wakeChar_10min
+        wakeChar_dir
     end
     methods
         function Obj = LASCAR_Data()
