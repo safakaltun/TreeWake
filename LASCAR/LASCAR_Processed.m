@@ -13,6 +13,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             Obj.CNR(Obj.noise) = 0;
             Obj.velRad(Obj.noise) = 0;
             Obj.get_velocity_components;
+            Obj.get_speed;
             Obj.get_direction;
             Obj.get_wake_character;
         end
@@ -74,6 +75,13 @@ classdef LASCAR_Processed < LASCAR_Raw
                     (sum(cosd(azimuths).*sind(azimuths),1).^2));
             end
         end
+        function get_speed(Obj)
+            range = 68:82;
+            Obj.spd.val1530 = sqrt((Obj.spd.u1530(range,:).^2)+(Obj.spd.v1530(range,:).^2));
+            range = 79:102;
+            Obj.spd.val212  = sqrt((Obj.spd.u212(range,:).^2)+(Obj.spd.v212(range,:).^2));
+            Obj.spd.valall  = sqrt((Obj.spd.uall(range,:).^2)+(Obj.spd.vall(range,:).^2));
+        end
         function get_direction(Obj)
             Obj.dir.value1530 = rad2deg(atan2(Obj.spd.v1530,Obj.spd.u1530))+180;
             Obj.dir.value212  = rad2deg(atan2(Obj.spd.v212,Obj.spd.u212))+180;
@@ -119,6 +127,9 @@ classdef LASCAR_Processed < LASCAR_Raw
                 Obj.wakeChar_10min.dirValue1530(:,iTenMins) =  mean(Obj.dir.value1530(:,uniScan),2);
                 Obj.wakeChar_10min.dirValue212(:,iTenMins)  =  mean(Obj.dir.value212(:,uniScan),2);
                 Obj.wakeChar_10min.dirValueall(:,iTenMins)  =  mean(Obj.dir.valueall(:,uniScan),2);
+                Obj.wakeChar_10min.spd.Value1530(iTenMins) =  mean(mean(Obj.spd.val1530(:,uniScan),2),1);
+                Obj.wakeChar_10min.spd.Value212(iTenMins)  =  mean(mean(Obj.spd.val212(:,uniScan),2),1);
+                Obj.wakeChar_10min.spd.Valueall(iTenMins)  =  mean(mean(Obj.spd.valall(:,uniScan),2),1);
                 Obj.wakeChar_10min.Normvalue(:,:,iTenMins) = Obj.wakeChar_10min.value(:,:,iTenMins)./Obj.wakeChar_10min.value(6,74,iTenMins);
                 Obj.wakeChar_10min.time(iTenMins) = Obj.timeStop(ind{iTenMins}(end));
                 Obj.wakeChar_10min.azimuth(:,iTenMins) = deg2rad(mean(azimuths(:,uniScan),2));
@@ -151,6 +162,7 @@ classdef LASCAR_Processed < LASCAR_Raw
                 Obj.wakeChar_dir.azimuth(:,count) = deg2rad(mean(azimuths(:,cond),2));
                 Obj.wakeChar_dir.bin(:,count) = [bins(iDir) bins(iDir+1)];
                 Obj.wakeChar_dir.meanAngle(count)    = mean(wDir(cond));
+                Obj.wakeChar_dir.nSample(count)  = sum(cond);
             end
             
             
@@ -229,6 +241,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             sp4.XAxis.TickLabelRotation = 45;
             view(sp4,[0 90])
             Obj.wakeChar_10min.dirValue1530 = mean(Obj.wakeChar_10min.dirValue1530(range,:),1);
+            
             cb = colorbar(sp4,'Location','south','TickDirection','in','AxisLocation','in');
             caxis(sp4,[220 320])
             colormap(sp4,legendColor)

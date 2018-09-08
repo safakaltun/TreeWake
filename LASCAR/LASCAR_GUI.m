@@ -42,6 +42,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
         fig
         filtered
         geo
+        H
         hax1
         isNorm
         lidar
@@ -133,6 +134,17 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 Obj.wakeChar_10min = Obj.windDat.processed.wakeChar_10min;
                 Obj.wakeChar_dir = Obj.windDat.processed.wakeChar_dir;
                 Obj.wind.SelectedObject = Obj.wind.Children(3);
+                [~,minDif]=min(abs(Obj.mastDat.Data.Time.value-Obj.windDat.processed.wakeChar_10min.time(1)));
+                nans =  nan(size(Obj.mastDat.Data.Time.value));
+                lenDat = length( Obj.windDat.processed.wakeChar_10min.spd.Value1530);
+                Obj.mastDat.Data.Wsp_22p7_1530.value = nans;
+                Obj.mastDat.Data.Wsp_22p7_1530.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.spd.Value1530';
+                Obj.mastDat.Data.Wsp_22p7_212.value = nans;
+                Obj.mastDat.Data.Wsp_22p7_1530.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.spd.Value212';
+                Obj.mastDat.Data.Wsp_22p7_all.value = nans;
+                Obj.mastDat.Data.Wsp_22p7_all.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.spd.Valueall';
+                
+                
                 %                 Obj.draw_height_plot;
                 Obj.draw_polar_plot;
                 
@@ -392,6 +404,11 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             if strcmpi(varargin{2}.Title,'Field Analysis')
                 Obj.toolbar.Visible = 'on';
             elseif strcmpi(varargin{2}.Title,'Time Series')
+                
+                fields  = fieldnames(Obj.mastDat.Data);
+                Obj.tsSelection.String = [' '; fields];
+                Obj.tsSelection2.String = [' '; fields];
+                
                 set(dcm_obj,'UpdateFcn',@Obj.ts_cursor)
                 Obj.toolbar.Visible = 'off';
             else
@@ -529,7 +546,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 end
                 
                 try
-                Obj.draw_polar_plot;
+                    Obj.draw_polar_plot;
                 end
                 pause(1/10);
             end
@@ -546,7 +563,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 Obj.currentStatDeg = Obj.currentStatDeg + 1;
             end
             try
-            Obj.draw_polar_plot;
+                Obj.draw_polar_plot;
             end
         end
         function last_time(varargin)
@@ -656,16 +673,16 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             fig = figure(1001);
             
             clf(fig)
-            fig.Position =  [440 113 658 824];
+            fig.Position =  [0 113 658 824];
             Obj.ax6 = subplot(2,1,1);
             pc =  surf(Obj.ax6,xall./1E3,yall./1E3,velocity,colors);
             pc.EdgeColor = 'none';
             Obj.ax6.Color = 'none';
             Obj.ax6.GridColor = 'none';
             if Obj.wakeStatCheckOff.Value
-                title(Obj.ax6,['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ']);
+                title(Obj.ax6,['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, N = ' num2str(Obj.wakeChar_dir.nSample(Obj.currentStatDeg))]);
             else
-            title(Obj.ax6,time)
+                title(Obj.ax6,time)
             end
             xlim(Obj.ax6,[693.2 695])
             ylim(Obj.ax6,[6175.2 6176.2])
@@ -673,12 +690,12 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             caxis(Obj.ax6,[bounds(1) bounds(end)]);
             view(Obj.ax6,[0 90])
             daspect(Obj.ax6,[0.01  0.01 5])
-xlabel(Obj.ax6,'Easting [km]')
-ylabel(Obj.ax6,'Northing [km]')
-cb =colorbar(Obj.ax6,'Location','east','AxisLocation','out') ;
-cb.Label.String = 'Wind Speed [Normalized]';
-
-             colormap(Obj.ax6,legendColor);
+            xlabel(Obj.ax6,'Easting [km]')
+            ylabel(Obj.ax6,'Northing [km]')
+            cb =colorbar(Obj.ax6,'Location','east','AxisLocation','out') ;
+            cb.Label.String = 'Wind Speed [Normalized]';
+            
+            colormap(Obj.ax6,legendColor);
             
             Obj.pc =  surf(Obj.ax1,xall./1E3,yall./1E3,hall,colors);
             Obj.F = scatteredInterpolant([reshape(xall,[],1)./1E3,reshape(yall,[],1)./1E3],reshape(velocity,[],1),'linear','none');
@@ -696,20 +713,25 @@ cb.Label.String = 'Wind Speed [Normalized]';
         function draw_info(varargin)
             Obj = varargin{1};
             range = (5:-0.25:-5).*19;
-               if Obj.wakeStatCheckOff.Value
+            elDist = -200:0.5:1600;
+            if Obj.wakeStatCheckOff.Value
                 angle = Obj.wakeChar_dir.meanAngle(Obj.currentStatDeg);
-                
                 tree = [693414.214198 6175530.061938];
+                
                 dist = [6 10 15 20 30].*19;
                 cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
                 
                 cPts =(cPts+tree)./1E3;
                 
+                elCPts = [-elDist.*sind(angle);-elDist.*cosd(angle)]';
+                elCPts =(elCPts+tree)./1E3;
                 
                 bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
                 hold(Obj.ax1,'on')
                 hold(Obj.ax6,'on')
-                
+                lines = elCPts;
+                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
+                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
                 lines = bar+cPts(1,:);
                 plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
                 plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
@@ -738,23 +760,42 @@ cb.Label.String = 'Wind Speed [Normalized]';
                 plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+k')
                 xlabel('Axial Distance from the Center of Tree [H: Tree Height]')
                 ylabel('Wind Speed [Normalized]')
-                title(['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, Ind = ' num2str(Obj.currentStatDeg)]);
+                %                 title(['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, Ind = ' num2str(Obj.currentStatDeg)]);
                 hold('off')
                 legend('6H','10H','15H','20H','30H')
                 figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Bin_' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '_' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '_' num2str(Obj.currentStatDeg)]);
                 print('-f1001',figName,'-depsc')
                 print('-f1001',figName,'-djpeg')
-               end
-               try
-            [~,minDif]=min(abs(Obj.mastDat.Data.Time.value-Obj.scanDate));
-               
-            if Obj.minDifInd == minDif
-                return
-            else
-                Obj.minDifInd = minDif;
+                
+                fig2 = figure(1002);
+                clf(fig2)
+                fig2.Position = [765 727 793 176];
+                sp = axes(fig2);
+                sp.Color = 'none';
+                plot(sp,elDist,Obj.H(elCPts./1E3), '-k')
+                ylim([-1 30])
+                xlabel('Distance [m]')
+                ylabel('Surface Height [m]')
+                grid on
+                hold on
+                plot(sp,[0 0],[0 30],'-r')
+                sp.XTickLabel(2) = {'0, Tree'};
+                
+                
+                figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Height' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '_' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '_' num2str(Obj.currentStatDeg)]);
+                print('-f1002',figName,'-depsc')
+                print('-f1002',figName,'-djpeg')
             end
-               catch
-                   return
+            try
+                [~,minDif]=min(abs(Obj.mastDat.Data.Time.value-Obj.scanDate));
+                
+                if Obj.minDifInd == minDif
+                    return
+                else
+                    Obj.minDifInd = minDif;
+                end
+            catch
+                return
             end
             fields  = fieldnames(Obj.mastDat.Data);
             
@@ -786,181 +827,208 @@ cb.Label.String = 'Wind Speed [Normalized]';
             end
             
             %%
-         
-                angle = Obj.wakeChar_10min.dirValue1530(Obj.currentStatTime);
-                
-                tree = [693414.214198 6175530.061938];
-                dist = [6 10 15 20 30].*19;
-                cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
-                
-                cPts =(cPts+tree)./1E3;
-                
-                
-                bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
-                hold(Obj.ax1,'on')
-                hold(Obj.ax6,'on')
-                
-                lines = bar+cPts(1,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
-                lines = bar+cPts(2,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','--');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','--');
-                lines = bar+cPts(3,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
-                lines = bar+cPts(4,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-.');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-.');
-                lines = bar+cPts(5,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k');
-                
-                fig = figure(1001);
-                subplot(2,1,2)
-                hold('on')
-                plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-k')
-                plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--k')
-                plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':k')
-                plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.k')
-                plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+k')
-                title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
-                hold('off')
-                %                 legend(num2str(cell2mat(num2cell(dist)')))
-                %%
-                angle = Obj.wakeChar_10min.dirValue212(Obj.currentStatTime);
-                
-                tree = [693414.214198 6175530.061938];
-                dist = [6 10 15 20 30].*19;
-                cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
-                
-                cPts =(cPts+tree)./1E3;
-                
-                
-                bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
-                hold(Obj.ax1,'on')
-                hold(Obj.ax6,'on')
-                lines = bar+cPts(1,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-');
-                lines = bar+cPts(2,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','--');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','--');
-                lines = bar+cPts(3,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle',':');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle',':');
-                lines = bar+cPts(4,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-.');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-.');
-                lines = bar+cPts(5,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g');
-                
-                %                 fig = figure(1001);
-                subplot(2,1,2)
-                hold('on')
-                plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-g')
-                plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--g')
-                plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':g')
-                plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.g')
-                plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+g')
-                title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
-                hold('off')
-                legend(num2str(cell2mat(num2cell(dist)')))
-                %%
-                angle = Obj.wakeChar_10min.dirValueall(Obj.currentStatTime);
-                
-                tree = [693414.214198 6175530.061938];
-                dist = [6 10 15 20 30].*19;
-                cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
-                
-                cPts =(cPts+tree)./1E3;
-                
-                
-                bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
-                hold(Obj.ax1,'on')
-                hold(Obj.ax6,'on')
-                lines = bar+cPts(1,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-');
-                lines = bar+cPts(2,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','--');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','--');
-                lines = bar+cPts(3,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle',':');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle',':');
-                lines = bar+cPts(4,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-.');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-.');
-                lines = bar+cPts(5,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c');
-                
-                %                 fig = figure(1001);
-                subplot(2,1,2)
-                hold('on')
-                plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-c')
-                plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--c')
-                plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':c')
-                plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.c')
-                plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+c')
-                title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
-                hold('off')
-                legend(num2str(cell2mat(num2cell(dist)')))
-                
-                %%
-                angle = mod(Obj.mastDat.Data.(['Wdir_' num2str(heights(iHgt)) 'm']).value(minDif),360);
-                
-                tree = [693414.214198 6175530.061938];
-                dist = [6 10 15 20 30].*19;
-                cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
-                
-                cPts =(cPts+tree)./1E3;
-                
-                
-                bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
-                hold(Obj.ax1,'on')
-                hold(Obj.ax6,'on')
-                lines = bar+cPts(1,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-');
-                lines = bar+cPts(2,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','--');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','--');
-                lines = bar+cPts(3,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle',':');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle',':');
-                lines = bar+cPts(4,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-.');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-.');
-                lines = bar+cPts(5,:);
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b');
-                
-                %                 fig = figure(1001);
-                sub = subplot(2,1,2)
-                sub.Color = 'none';
-                hold('on')
-                plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-b')
-                plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--b')
-                plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':b')
-                plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.b')
-                plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+b')
-                grid on
-                title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ind = ' num2str(Obj.currentStatTime)]);
-                hold('off')
-                h =  legend(sub,{'6H' '10H' '15H' '20H' '30H'},'Location','southeast');
-                
-                xlabel(sub,'Axial Distance from the Center of Tree [H: Tree Height]')
-                ylabel(sub,'Wind Speed [Normalized]')
-                legend(Obj.ax6,Obj.ax6.Children(end-1:-5:end-20),{'Case 1','Case 2','Case 3','Mast'},'Location','southeast')
+            
+            angle = Obj.wakeChar_10min.dirValue1530(Obj.currentStatTime);
+            
+            tree = [693414.214198 6175530.061938];
+            dist = [6 10 15 20 30].*19;
+            cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
+            
+            cPts =(cPts+tree)./1E3;
+            
+            elCPts = [-elDist.*sind(angle);-elDist.*cosd(angle)]';
+            elCPts =(elCPts+tree)./1E3;
+            
+            bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
+            hold(Obj.ax1,'on')
+            hold(Obj.ax6,'on')
+            lines = elCPts;
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
+            lines = bar+cPts(1,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
+            lines = bar+cPts(2,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','--');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','--');
+            lines = bar+cPts(3,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
+            lines = bar+cPts(4,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-.');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-.');
+            lines = bar+cPts(5,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k');
+            
+            fig = figure(1001);
+            subplot(2,1,2)
+            hold('on')
+            plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-k')
+            plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--k')
+            plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':k')
+            plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.k')
+            plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+k')
+            title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
+            hold('off')
+            %                 legend(num2str(cell2mat(num2cell(dist)')))
+            %%
+            angle = Obj.wakeChar_10min.dirValue212(Obj.currentStatTime);
+            
+            tree = [693414.214198 6175530.061938];
+            dist = [6 10 15 20 30].*19;
+            cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
+            
+            cPts =(cPts+tree)./1E3;
+            
+            
+            bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
+            hold(Obj.ax1,'on')
+            hold(Obj.ax6,'on')
+            lines = bar+cPts(1,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-');
+            lines = bar+cPts(2,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','--');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','--');
+            lines = bar+cPts(3,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle',':');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle',':');
+            lines = bar+cPts(4,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-.');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g','LineStyle','-.');
+            lines = bar+cPts(5,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','g');
+            
+            %                 fig = figure(1001);
+            subplot(2,1,2)
+            hold('on')
+            plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-g')
+            plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--g')
+            plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':g')
+            plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.g')
+            plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+g')
+            title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
+            hold('off')
+            legend(num2str(cell2mat(num2cell(dist)')))
+            %%
+            angle = Obj.wakeChar_10min.dirValueall(Obj.currentStatTime);
+            
+            tree = [693414.214198 6175530.061938];
+            dist = [6 10 15 20 30].*19;
+            cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
+            
+            cPts =(cPts+tree)./1E3;
+            
+            
+            bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
+            hold(Obj.ax1,'on')
+            hold(Obj.ax6,'on')
+            lines = bar+cPts(1,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-');
+            lines = bar+cPts(2,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','--');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','--');
+            lines = bar+cPts(3,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle',':');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle',':');
+            lines = bar+cPts(4,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-.');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c','LineStyle','-.');
+            lines = bar+cPts(5,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','c');
+            
+            %                 fig = figure(1001);
+            subplot(2,1,2)
+            hold('on')
+            plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-c')
+            plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--c')
+            plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':c')
+            plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.c')
+            plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+c')
+            title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
+            hold('off')
+            legend(num2str(cell2mat(num2cell(dist)')))
+            
+            %%
+            angle = mod(Obj.mastDat.Data.(['Wdir_' num2str(heights(iHgt)) 'm']).value(minDif),360);
+            
+            tree = [693414.214198 6175530.061938];
+            dist = [6 10 15 20 30].*19;
+            cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
+            
+            cPts =(cPts+tree)./1E3;
+            
+            
+            bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
+            hold(Obj.ax1,'on')
+            hold(Obj.ax6,'on')
+            lines = bar+cPts(1,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-');
+            lines = bar+cPts(2,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','--');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','--');
+            lines = bar+cPts(3,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle',':');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle',':');
+            lines = bar+cPts(4,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-.');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b','LineStyle','-.');
+            lines = bar+cPts(5,:);
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','b');
+            
+            %                 fig = figure(1001);
+            sub = subplot(2,1,2)
+            sub.Color = 'none';
+            hold('on')
+            plot(-5:0.25:5,Obj.F(bar+cPts(1,:)), '-b')
+            plot(-5:0.25:5,Obj.F(bar+cPts(2,:)),'--b')
+            plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':b')
+            plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.b')
+            plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+b')
+            grid on
+            %             title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ind = ' num2str(Obj.currentStatTime)]);
+            hold('off')
+            h =  legend(sub,{'6H' '10H' '15H' '20H' '30H'},'Location','southeast');
+            
+            xlabel(sub,'Axial Distance from the Center of Tree [H: Tree Height]')
+            ylabel(sub,'Wind Speed [Normalized]')
+            legend(Obj.ax6,Obj.ax6.Children(end-1:-5:end-20),{'Case 1','Case 2','Case 3','Mast'},'Location','southeast')
             header =  [datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ri_{B} = ' num2str(Obj.mastDat.Data.Ri1870.value(minDif),'%2.10f') ', TI = ' num2str(Obj.mastDat.Data.TI_18m.value(minDif))];
-                title(Obj.ax6,header)
-
-               
-                figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Time_10min_' num2str(Obj.currentStatTime)]);
-                print('-f1001',figName,'-depsc')
-                print('-f1001',figName,'-djpeg')
+            title(Obj.ax6,header)
+            
+            
+            figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Time_10min_' num2str(Obj.currentStatTime)]);
+            print('-f1001',figName,'-depsc')
+            print('-f1001',figName,'-djpeg')
+            
+            
+            fig2 = figure(1002);
+            clf(fig2)
+            fig2.Position = [765 727 793 176];
+            sp = axes(fig2);
+            sp.Color = 'none';
+            plot(sp,elDist,Obj.H(elCPts./1E3), '-k')
+            ylim([-1 30])
+            xlabel('Distance [m]')
+            ylabel('Surface Height [m]')
+            grid on
+            hold on
+            plot(sp,[0 0],[0 30],'-r')
+            xlim([-200 1600])
+            sp.XTickLabel(2) = {'0, Tree'};
+            
+            
+            figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Time_10min_Height' num2str(Obj.currentStatTime)]);
+            print('-f1002',figName,'-depsc')
+            print('-f1002',figName,'-djpeg')
+            
+            
             %%
             h(1) = plot(Obj.ax11,[0; vert_profile(:,2)],[0 ;vert_profile(:,1)],'DisplayName','Wind Speed');
             
@@ -1191,6 +1259,9 @@ cb.Label.String = 'Wind Speed [Normalized]';
             Obj.p5 = scatter3(Obj.ax1,(Obj.geoDat.targetInfo.All(end-9:end-1,2)/1e3),(Obj.geoDat.targetInfo.All(end-9:end-1,1)/1e3),Obj.geoDat.targetInfo.All(end-9:end-1,3),'vr','MarkerFaceColor',[1 0 0]);
             xlim(Obj.ax1,[690 695])
             ylim(Obj.ax1,[6174 6177])
+            
+            [X,Y] = meshgrid((690:0.002:(695)),(6174:0.002:(6177)));
+            Obj.H = scatteredInterpolant([reshape(X,[],1)./1E3,reshape(Y,[],1)./1E3],reshape(Obj.geoDat.surfDat,[],1),'linear','none');
             
             %%
             minX  = min(Obj.geoDat.highResDat.X)/1E3;
