@@ -3,9 +3,12 @@ pfig = figure(1E6);
 clf(pfig);
 axMP = fig.Children(3).Children(1).Children(3).Children;
 axTS = fig.Children(3).Children(3).Children(1).Children;
-a = copyobj(axMP,pfig);
-a.Colormap=axMP.Colormap;
+actAx = axTS;
+a = copyobj(actAx,pfig);
+return
+a.Colormap=actAx.Colormap;
 % colorbar(a,'Location','south')
+
 xlabel(a,'Easting [km]')
 ylabel(a,'Northing [km]')
 % zlabel(a,'Elevation [m]')

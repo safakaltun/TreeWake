@@ -16,14 +16,15 @@ classdef MAST < matlab.mixin.SetGet
                     Obj.Data.(header{iColumn}).value(Obj.Data.(header{iColumn}).value>50) = 0;
                 end
                 if strcmpi(header{iColumn},'Time')
-                    Obj.Data.Time.value = datenum(num2str(Obj.Data.Time.value),'yyyymmddHHMM');
+                    Obj.Data.Time.value = (datenum(num2str(Obj.Data.Time.value),'yyyymmddHHMM')-1/24);
                 end
                 Obj.Data.(header{iColumn}).isTS = true;
             end
-            Obj.filter_data;
             Obj.set_potential_temp;
             Obj.get_stability;
             Obj.get_TI;
+            Obj.filter_data;
+                        
 %             WindRose(Obj.Data.Wdir_41m,Obj.Data.Wsp_70m_mean)
         end
         function filter_data(Obj)
@@ -37,6 +38,7 @@ classdef MAST < matlab.mixin.SetGet
             end
             ind2 = [false;(abs(diff(Obj.Data.AirAbs_18m.value))>3 | abs(diff(Obj.Data.AirAbs_18m.value))==0)];
             ind2 = ind2 | [false;(abs(diff(Obj.Data.AirAbs_70m.value))>3 | abs(diff(Obj.Data.AirAbs_70m.value))==0)];
+            ind2 = ind2 | abs(Obj.Data.Ri1870.value)>1;
             
             
             indWsp = Obj.Data.Wsp_70m_mean.value<1.5 | Obj.Data.Wsp_57m_mean.value<1.5 | Obj.Data.Wsp_44m_mean.value<1.5...

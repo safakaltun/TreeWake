@@ -140,10 +140,16 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 Obj.mastDat.Data.Wsp_22p7_1530.value = nans;
                 Obj.mastDat.Data.Wsp_22p7_1530.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.spd.Value1530';
                 Obj.mastDat.Data.Wsp_22p7_212.value = nans;
-                Obj.mastDat.Data.Wsp_22p7_1530.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.spd.Value212';
+                Obj.mastDat.Data.Wsp_22p7_212.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.spd.Value212';
                 Obj.mastDat.Data.Wsp_22p7_all.value = nans;
                 Obj.mastDat.Data.Wsp_22p7_all.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.spd.Valueall';
                 
+                Obj.mastDat.Data.W_dir_22p7_Case1.value = nans;
+                Obj.mastDat.Data.W_dir_22p7_Case1.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.dirValue1530';
+                Obj.mastDat.Data.W_dir_22p7_Case2.value = nans;
+                Obj.mastDat.Data.W_dir_22p7_Case2.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.dirValue212';
+                Obj.mastDat.Data.W_dir_22p7_Case3.value = nans;
+                Obj.mastDat.Data.W_dir_22p7_Case3.value(minDif:minDif+lenDat-1) = Obj.windDat.processed.wakeChar_10min.dirValueall';
                 
                 %                 Obj.draw_height_plot;
                 Obj.draw_polar_plot;
@@ -715,6 +721,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             range = (5:-0.25:-5).*19;
             elDist = -200:0.5:1600;
             if Obj.wakeStatCheckOff.Value
+
                 angle = Obj.wakeChar_dir.meanAngle(Obj.currentStatDeg);
                 tree = [693414.214198 6175530.061938];
                 
@@ -825,7 +832,8 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 angle = mod(Obj.mastDat.Data.(['Wdir_' num2str(heights(iHgt)) 'm']).value(minDif),360);
                 text(Obj.ax11,0.65,heights(iHgt),[num2str(angle,'%5.1f') '\circ'],'HorizontalAlignment','left')
             end
-            
+            elAngle = mod(Obj.mastDat.Data.(['Wdir_' num2str(44) 'm']).value(minDif),360);
+
             %%
             
             angle = Obj.wakeChar_10min.dirValue1530(Obj.currentStatTime);
@@ -836,7 +844,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             
             cPts =(cPts+tree)./1E3;
             
-            elCPts = [-elDist.*sind(angle);-elDist.*cosd(angle)]';
+            elCPts = [-elDist.*sind(elAngle);-elDist.*cosd(elAngle)]';
             elCPts =(elCPts+tree)./1E3;
             
             bar = [range*sind(angle-270);range*cosd(angle-270)]'./1E3;
@@ -998,7 +1006,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             
             xlabel(sub,'Axial Distance from the Center of Tree [H: Tree Height]')
             ylabel(sub,'Wind Speed [Normalized]')
-            legend(Obj.ax6,Obj.ax6.Children(end-1:-5:end-20),{'Case 1','Case 2','Case 3','Mast'},'Location','southeast')
+            legend(Obj.ax6,Obj.ax6.Children(end-2:-5:end-21),{'Case 1','Case 2','Case 3','Mast'},'Location','southeast')
             header =  [datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ri_{B} = ' num2str(Obj.mastDat.Data.Ri1870.value(minDif),'%2.10f') ', TI = ' num2str(Obj.mastDat.Data.TI_18m.value(minDif))];
             title(Obj.ax6,header)
             
@@ -1083,7 +1091,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             Obj = varargin{1};
             
             cla(Obj.ax32,'reset');
-            yyaxis(Obj.ax32,'left');
+%             yyaxis(Obj.ax32,'left');
             if length(Obj.pan32.Children) >1
                 Obj.pan32.Children(1).delete
             end
@@ -1092,21 +1100,34 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 intVal = Obj.mastDat.Data.(Obj.tsSelection.String{Obj.tsSelection.Value}).value;
                 intDate(~Obj.filtered.combined) = NaN;
                 intVal(~Obj.filtered.combined) = NaN;
-                plot(Obj.ax32,intDate,intVal)
+                d1 = plot(Obj.ax32,intDate,intVal);
                 hold(Obj.ax32,'on');
-                plot(Obj.ax32,[Obj.mastDat.Data.Time.value(Obj.minDifInd) Obj.mastDat.Data.Time.value(Obj.minDifInd)],[Obj.ax32.YAxis(1).Limits(1) Obj.ax32.YAxis(1).Limits(2)],'-r')
+                lEnt1 = strrep(Obj.tsSelection.String{Obj.tsSelection.Value},'W_dir','Wdir');
+                
                 if strcmpi(Obj.tsSelection2.Enable,'on') && Obj.tsSelection2.Value ~= 1
                     yyaxis(Obj.ax32,'right');
                     intDate = Obj.mastDat.Data.Time.value;
                     intVal = Obj.mastDat.Data.(Obj.tsSelection2.String{Obj.tsSelection2.Value}).value;
                     intDate(~Obj.filtered.combined) = NaN;
                     intVal(~Obj.filtered.combined) = NaN;
-                    plot(Obj.ax32,intDate,intVal)
+                    d2 = plot(Obj.ax32,intDate,intVal);
+                    lEnt2 = strrep(Obj.tsSelection2.String{Obj.tsSelection2.Value},'W_dir','Wdir');
                 end
-                %                 minlim = min(Obj.ax32.YAxis(1).Limits(1),(Obj.tsSelection2.Value~=1)*Obj.ax32.YAxis(2).Limits(1));
-                %                 maxlim = max(Obj.ax32.YAxis(1).Limits(2),(Obj.tsSelection2.Value~=1)*Obj.ax32.YAxis(2).Limits(2));
-                %                 Obj.ax32.YAxis(1).Limits = [minlim maxlim];
-                %                 Obj.ax32.YAxis(2).Limits = [minlim maxlim];
+                
+                %                 Obj.ax6,Obj.ax6.Children(end-2:-5:end-21),{'Case 1','Case 2','Case 3','Mast'}
+%                 minlim = min(Obj.ax32.YAxis(1).Limits(1),(Obj.tsSelection2.Value~=1)*Obj.ax32.YAxis(2).Limits(1));
+%                 maxlim = max(Obj.ax32.YAxis(1).Limits(2),(Obj.tsSelection2.Value~=1)*Obj.ax32.YAxis(2).Limits(2));
+%                 Obj.ax32.YAxis(1).Limits = [minlim maxlim];
+%                 Obj.ax32.YAxis(2).Limits = [minlim maxlim];
+                grid on;
+                
+%                 plot(Obj.ax32,[Obj.mastDat.Data.Time.value(Obj.minDifInd) Obj.mastDat.Data.Time.value(Obj.minDifInd)],[Obj.ax32.YAxis(1).Limits(1) Obj.ax32.YAxis(1).Limits(2)],'-r')
+                if strcmpi(Obj.tsSelection2.Enable,'on') && Obj.tsSelection2.Value ~= 1
+%                     legend([d1 d2],{lEnt1,lEnt2}, 'Interpreter', 'none')
+                else
+%                     legend(d1,lEnt1, 'Interpreter', 'none')
+                end
+                
                 datetick(Obj.ax32,'x','dd-mm-yy HH:MM')
                 if any(Obj.filtered.date)
                     xlim(Obj.ax32,[min(Obj.mastDat.Data.Time.value(Obj.filtered.date)) max(Obj.mastDat.Data.Time.value(Obj.filtered.date))])
