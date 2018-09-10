@@ -199,7 +199,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             hold(sp1,'on')
             sf = surf(sp1,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.dirValue1530(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
-            view(sp1,[0 0])
+            view(sp1,[45 45])
             caxis(sp1,[200 360])
             
             xlabel(sp1,'Date')
@@ -249,10 +249,11 @@ classdef LASCAR_Processed < LASCAR_Raw
             clear colors velocity interval bounds legendColor
             grid(sp2,'off')
             grid(sp4,'off')
-            print(fig,'Top','-depsc')
+             
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_97');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+            saveas(fig,figName,'epsc')
+            saveas(fig,figName,'jpeg')
+            saveas(fig,figName,'fig')
             %%
             fig = figure(98);
             fig.Position= [412 89 1083 760];
@@ -287,7 +288,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             hold(sp1,'on')
             sf = surf(sp1,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.spdValue1530(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
-            view(sp1,[0 0])
+            view(sp1,[45 45])
             caxis(sp1,[0 30])
             
             xlabel(sp1,'Date')
@@ -337,10 +338,11 @@ classdef LASCAR_Processed < LASCAR_Raw
             clear colors velocity interval bounds legendColor
             grid(sp2,'off')
             grid(sp4,'off')
-            print(fig,'Top','-depsc')
+             
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_97_spd');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+            saveas(fig,figName,'epsc')
+            saveas(fig,figName,'jpeg')
+            saveas(fig,figName,'fig')
             %% Direction Based
             fig = figure(99);
             fig.Position= [412 89 1083 760];
@@ -374,7 +376,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             hold(sp1,'on')
             sf = surf(sp1,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.dirValue212(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
-            view(sp1,[90 0])
+            view(sp1,[45 45])
             %             view(sp1,[-89 10])
             caxis(sp1,[200 360])
             
@@ -426,9 +428,10 @@ classdef LASCAR_Processed < LASCAR_Raw
             Obj.wakeChar_10min.dirValue212 = mean(Obj.wakeChar_10min.dirValue212(range,:),1);
             clear colors velocity interval bounds legendColor
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_98');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
-                  %%
+            saveas(fig,figName,'epsc')
+            saveas(fig,figName,'jpeg')
+            saveas(fig,figName,'fig')
+            %%
             fig = figure(100);
             fig.Position= [412 89 1083 760];
             sp1 = subplot(2,2,1);
@@ -462,7 +465,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             hold(sp1,'on')
             sf = surf(sp1,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.spdValue212(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
-            view(sp1,[0 0])
+            view(sp1,[45 45])
             caxis(sp1,[0 40])
             
             xlabel(sp1,'Date')
@@ -512,10 +515,11 @@ classdef LASCAR_Processed < LASCAR_Raw
             clear colors velocity interval bounds legendColor
             grid(sp2,'off')
             grid(sp4,'off')
-            print(fig,'Top','-depsc')
+             
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_98_spd');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+            saveas(fig,figName,'epsc')
+            saveas(fig,figName,'jpeg')
+            saveas(fig,figName,'fig')
             %% Direction Based
             fig = figure(101);
             fig.Position= [412 89 1083 760];
@@ -548,7 +552,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             hold(sp1,'on')
             sf = surf(sp1,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.dirValueall(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
-            view(sp1,[90 0])
+            view(sp1,[45 45])
             %             view(sp1,[-89 10])
             caxis(sp1,[200 360])
             
@@ -600,11 +604,12 @@ classdef LASCAR_Processed < LASCAR_Raw
             grid(sp2,'off')
             grid(sp4,'off')
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_99');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+            saveas(fig,figName,'epsc')
+            saveas(fig,figName,'jpeg')
+            saveas(fig,figName,'fig')
             Obj.wakeChar_10min.dirValueall = mean(Obj.wakeChar_10min.dirValueall(range,:),1);
             
-                     %%
+            %%
             fig = figure(102);
             fig.Position= [412 89 1083 760];
             sp1 = subplot(2,2,1);
@@ -638,7 +643,7 @@ classdef LASCAR_Processed < LASCAR_Raw
             hold(sp1,'on')
             sf = surf(sp1,Obj.wakeChar_10min.time,Obj.gateRange(range),Obj.wakeChar_10min.spdValueall(range,:),permute(colors,[2 1 3]));
             sf.EdgeColor = 'none';
-            view(sp1,[0 0])
+            view(sp1,[45 45])
             caxis(sp1,[0 40])
             
             xlabel(sp1,'Date')
@@ -688,10 +693,12 @@ classdef LASCAR_Processed < LASCAR_Raw
             clear colors velocity interval bounds legendColor
             grid(sp2,'off')
             grid(sp4,'off')
-            print(fig,'Top','-depsc')
+             
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased','Para_99_spd');
-            print(fig,figName,'-depsc')
-            print(fig,figName,'-djpeg')
+            saveas(fig,figName,'epsc')
+            saveas(fig,figName,'jpeg')
+            saveas(fig,figName,'fig')
+            
         end
         function pc = plotter(Obj,inp)
             dir1 = inp;

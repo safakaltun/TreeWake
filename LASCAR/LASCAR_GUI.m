@@ -543,6 +543,8 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                     Obj.currentStatTime = Obj.currentStatTime+1;
                 else
                     Obj.currentStatTime = 1;
+                    varargin{2}.State = 'off';
+                    return
                 end
                 
                 if Obj.currentStatDeg < length(Obj.wakeChar_dir.bin)
@@ -723,7 +725,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             if Obj.wakeStatCheckOff.Value
 
                 angle = Obj.wakeChar_dir.meanAngle(Obj.currentStatDeg);
-                tree = [693414.214198 6175530.061938];
+                tree = [6.93422e+05 6.175546e+06];
                 
                 dist = [6 10 15 20 30].*19;
                 cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
@@ -737,8 +739,8 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 hold(Obj.ax1,'on')
                 hold(Obj.ax6,'on')
                 lines = elCPts;
-                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
-                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
+                plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
+                plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
                 lines = bar+cPts(1,:);
                 plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
                 plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
@@ -767,12 +769,16 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+k')
                 xlabel('Axial Distance from the Center of Tree [H: Tree Height]')
                 ylabel('Wind Speed [Normalized]')
+                ylim([0.4 1.1])
+
                 %                 title(['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, Ind = ' num2str(Obj.currentStatDeg)]);
                 hold('off')
-                legend('6H','10H','15H','20H','30H')
+                legend('6H','10H','15H','20H','30H','Orientation','horizontal','Location','north')
                 figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Bin_' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '_' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '_' num2str(Obj.currentStatDeg)]);
-                print('-f1001',figName,'-depsc')
-                print('-f1001',figName,'-djpeg')
+                
+                saveas(fig,figName,'epsc')
+                saveas(fig,figName,'jpeg')
+                saveas(fig,figName,'fig')
                 
                 fig2 = figure(1002);
                 clf(fig2)
@@ -790,8 +796,10 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 
                 
                 figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Height' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '_' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '_' num2str(Obj.currentStatDeg)]);
-                print('-f1002',figName,'-depsc')
-                print('-f1002',figName,'-djpeg')
+                
+                saveas(fig2,figName,'epsc')
+                saveas(fig2,figName,'jpeg')
+                saveas(fig2,figName,'fig')
             end
             try
                 [~,minDif]=min(abs(Obj.mastDat.Data.Time.value-Obj.scanDate));
@@ -833,12 +841,12 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 text(Obj.ax11,0.65,heights(iHgt),[num2str(angle,'%5.1f') '\circ'],'HorizontalAlignment','left')
             end
             elAngle = mod(Obj.mastDat.Data.(['Wdir_' num2str(44) 'm']).value(minDif),360);
-
+% elAngle =  258.4627826086956;
             %%
             
             angle = Obj.wakeChar_10min.dirValue1530(Obj.currentStatTime);
             
-            tree = [693414.214198 6175530.061938];
+            tree = [6.93422e+05 6.175546e+06];
             dist = [6 10 15 20 30].*19;
             cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
             
@@ -851,8 +859,8 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             hold(Obj.ax1,'on')
             hold(Obj.ax6,'on')
             lines = elCPts;
-            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
-            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
+            plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
+            plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle',':');
             lines = bar+cPts(1,:);
             plot3(Obj.ax1,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
             plot3(Obj.ax6,lines(:,1),lines(:,2),ones(length(lines(:,2)),1)*23,'LineWidth',2,'Color','k','LineStyle','-');
@@ -877,13 +885,13 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':k')
             plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.k')
             plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+k')
-            title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
+%             title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
             hold('off')
             %                 legend(num2str(cell2mat(num2cell(dist)')))
             %%
             angle = Obj.wakeChar_10min.dirValue212(Obj.currentStatTime);
             
-            tree = [693414.214198 6175530.061938];
+            tree = [6.93422e+05 6.175546e+06];
             dist = [6 10 15 20 30].*19;
             cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
             
@@ -917,13 +925,13 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':g')
             plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.g')
             plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+g')
-            title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
+%             title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
             hold('off')
             legend(num2str(cell2mat(num2cell(dist)')))
             %%
             angle = Obj.wakeChar_10min.dirValueall(Obj.currentStatTime);
             
-            tree = [693414.214198 6175530.061938];
+            tree = [6.93422e+05 6.175546e+06];
             dist = [6 10 15 20 30].*19;
             cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
             
@@ -957,14 +965,14 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             plot(-5:0.25:5,Obj.F(bar+cPts(3,:)), ':c')
             plot(-5:0.25:5,Obj.F(bar+cPts(4,:)),'-.c')
             plot(-5:0.25:5,Obj.F(bar+cPts(5,:)), '+c')
-            title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
+%             title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime)) ', Ind = ' num2str(Obj.currentStatTime)]);
             hold('off')
             legend(num2str(cell2mat(num2cell(dist)')))
             
             %%
             angle = mod(Obj.mastDat.Data.(['Wdir_' num2str(heights(iHgt)) 'm']).value(minDif),360);
             
-            tree = [693414.214198 6175530.061938];
+            tree = [6.93422e+05 6.175546e+06];
             dist = [6 10 15 20 30].*19;
             cPts =  [-dist.*sind(angle);-dist.*cosd(angle)]';
             
@@ -1002,18 +1010,21 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             grid on
             %             title([datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ind = ' num2str(Obj.currentStatTime)]);
             hold('off')
-            h =  legend(sub,{'6H' '10H' '15H' '20H' '30H'},'Location','southeast');
+            h =  legend(sub,{'6H' '10H' '15H' '20H' '30H'},'Location','north','Orientation','horizontal');
             
             xlabel(sub,'Axial Distance from the Center of Tree [H: Tree Height]')
             ylabel(sub,'Wind Speed [Normalized]')
-            legend(Obj.ax6,Obj.ax6.Children(end-2:-5:end-21),{'Case 1','Case 2','Case 3','Mast'},'Location','southeast')
-            header =  [datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ri_{B} = ' num2str(Obj.mastDat.Data.Ri1870.value(minDif),'%2.10f') ', TI = ' num2str(Obj.mastDat.Data.TI_18m.value(minDif))];
+            ylim(sub,[0.4 1.1])
+            legend(Obj.ax6,Obj.ax6.Children(end-2:-5:end-21),{'Case 1','Case 2','Case 3','Mast'},'Location','north','Orientation','horizontal')
+            header =  [datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ri_{B} = ' num2str(Obj.mastDat.Data.Ri1870.value(minDif),'%2.10f') ', TI = ' num2str(Obj.mastDat.Data.TI_18m.value(minDif))  ', t_{ind} = ' num2str(Obj.currentStatTime)];
             title(Obj.ax6,header)
             
             
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Time_10min_' num2str(Obj.currentStatTime)]);
-            print('-f1001',figName,'-depsc')
-            print('-f1001',figName,'-djpeg')
+    
+            saveas(fig,figName,'epsc')
+            saveas(fig,figName,'jpeg')
+            saveas(fig,figName,'fig')
             
             
             fig2 = figure(1002);
@@ -1033,9 +1044,10 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             
             
             figName = fullfile('R:\SpecialCourseSafak\Figures\DirBased',['Long_Time_10min_Height' num2str(Obj.currentStatTime)]);
-            print('-f1002',figName,'-depsc')
-            print('-f1002',figName,'-djpeg')
-            
+                        
+            saveas(fig2,figName,'epsc')
+            saveas(fig2,figName,'jpeg')
+            saveas(fig2,figName,'fig')
             
             %%
             h(1) = plot(Obj.ax11,[0; vert_profile(:,2)],[0 ;vert_profile(:,1)],'DisplayName','Wind Speed');

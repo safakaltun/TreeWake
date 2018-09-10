@@ -17,15 +17,22 @@ uiopen('R:\SpecialCourseSafak\Figures\Climate\long_RI_reversed.fig',1)
 f = gcf;
 longLim = f.Children(end).XLim;
 close(f)
-uiopen('R:\SpecialCourseSafak\Figures\Climate\MASTRI.fig',1)
+uiopen('R:\SpecialCourseSafak\Figures\Climate\TI.fig',1)
 
 
 f = gcf;
+TS_RI = f.Children.Children.YData;
+TS_TI = f.Children.Children.YData;
+time = f.Children.Children.XData;
+shortInd = time>shortLim(1) & time<shortLim(2);
+longInd = time>longLim(1) & time<longLim(2);
+scatter(sp1,TS_RI(shortInd),TS_TI(shortInd))
+scatter(sp2,TS_RI(longInd),TS_TI(longInd))
 
 
 fig = figure;
 fig.Position = [522 257 628 536];
-sp1 = subplot(2,1,1);
+sp1 = subplot(1,2,1);
 copyobj(flipud(f.Children.Children),sp1)
 xlim(sp1,shortLim)
 datetick(sp1,'x','dd/mm/yy-HH','keeplimits')
@@ -35,7 +42,7 @@ grid on
 if ~isempty(leg1Txt)
 legend(leg1Txt)
 end
-sp2 = subplot(2,1,2);
+sp2 = subplot(1,2,2);
 copyobj(flipud(f.Children.Children),sp2)
 xlim(longLim)
 ylim(vlim)
