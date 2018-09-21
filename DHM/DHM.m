@@ -11,6 +11,8 @@ classdef DHM < matlab.mixin.SetGet
         targetName = 'Sirocco';
         scannerHeight = 1.5;
         targetInfo
+        xLims = [6.933194570135746   6.935285067873304].*1E2;
+        yLims = [6.175484343891402   6.1756097737556571].*1E3;
     end
     methods
         function Obj = DHM(varargin)
@@ -25,8 +27,10 @@ classdef DHM < matlab.mixin.SetGet
             Obj.highResDat.Z = Z(finInd);
             
             forestArea = load('R:\SpecialCourseSafak\DHM_Data\lasdata_to_safak_693_6175.txt');
-            xInd = (forestArea(:,1)>693.35*1E3&forestArea(:,1)<693.7*1E3);
-            yInd = (forestArea(:,2)>6175.3*1E3&forestArea(:,2)<6175.6*1E3);
+%             xInd = (forestArea(:,1)>693.35*1E3&forestArea(:,1)<693.7*1E3);
+%             yInd = (forestArea(:,2)>6175.3*1E3&forestArea(:,2)<6175.6*1E3);
+            xInd = (forestArea(:,1)>Obj.xLims(1)*1E3&forestArea(:,1)<Obj.xLims(2)*1E3);
+            yInd = (forestArea(:,2)>Obj.yLims(1)*1E3&forestArea(:,2)<Obj.yLims(2)*1E3);
             finInd =  xInd&yInd;
             Obj.highResDat.Xf = forestArea(finInd,1);
             Obj.highResDat.Yf = forestArea(finInd,2);

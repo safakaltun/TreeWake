@@ -678,39 +678,39 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 end
             end
             
-            fig = figure(1001);
-            
-            clf(fig)
-            fig.Position =  [0 113 658 824];
-            Obj.ax6 = subplot(2,1,1);
-            pc =  surf(Obj.ax6,xall./1E3,yall./1E3,velocity,colors);
-            pc.EdgeColor = 'none';
-            Obj.ax6.Color = 'none';
-            Obj.ax6.GridColor = 'none';
-            if Obj.wakeStatCheckOff.Value
-                title(Obj.ax6,['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, N = ' num2str(Obj.wakeChar_dir.nSample(Obj.currentStatDeg))]);
-            else
-                title(Obj.ax6,time)
-            end
-            xlim(Obj.ax6,[693.2 695])
-            ylim(Obj.ax6,[6175.2 6176.2])
-            zlim(Obj.ax6,[0 30])
-            caxis(Obj.ax6,[bounds(1) bounds(end)]);
-            view(Obj.ax6,[0 90])
-            daspect(Obj.ax6,[0.01  0.01 5])
-            xlabel(Obj.ax6,'Easting [km]')
-            ylabel(Obj.ax6,'Northing [km]')
-            cb =colorbar(Obj.ax6,'Location','east','AxisLocation','out') ;
-            cb.Label.String = 'Wind Speed [Normalized]';
-            
-            colormap(Obj.ax6,legendColor);
+%             fig = figure(1001);
+%             
+%             clf(fig)
+%             fig.Position =  [0 113 658 824];
+%             Obj.ax6 = subplot(2,1,1);
+%             pc =  surf(Obj.ax6,xall./1E3,yall./1E3,velocity,colors);
+%             pc.EdgeColor = 'none';
+%             Obj.ax6.Color = 'none';
+%             Obj.ax6.GridColor = 'none';
+%             if Obj.wakeStatCheckOff.Value
+%                 title(Obj.ax6,['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, N = ' num2str(Obj.wakeChar_dir.nSample(Obj.currentStatDeg))]);
+%             else
+%                 title(Obj.ax6,time)
+%             end
+%             xlim(Obj.ax6,[693.2 695])
+%             ylim(Obj.ax6,[6175.2 6176.2])
+%             zlim(Obj.ax6,[0 30])
+%             caxis(Obj.ax6,[bounds(1) bounds(end)]);
+%             view(Obj.ax6,[0 90])
+%             daspect(Obj.ax6,[0.01  0.01 5])
+%             xlabel(Obj.ax6,'Easting [km]')
+%             ylabel(Obj.ax6,'Northing [km]')
+%             cb =colorbar(Obj.ax6,'Location','east','AxisLocation','out') ;
+%             cb.Label.String = 'Wind Speed [Normalized]';
+%             
+%             colormap(Obj.ax6,legendColor);
             
             Obj.pc =  surf(Obj.ax1,xall./1E3,yall./1E3,hall,colors);
-            Obj.F = scatteredInterpolant([reshape(xall,[],1)./1E3,reshape(yall,[],1)./1E3],reshape(velocity,[],1),'linear','none');
+%             Obj.F = scatteredInterpolant([reshape(xall,[],1)./1E3,reshape(yall,[],1)./1E3],reshape(velocity,[],1),'linear','none');
             
             Obj.pc.EdgeColor = 'none';
             title(Obj.ax1,time)
-            Obj.draw_info;
+%             Obj.draw_info;
             alpha(Obj.pc,Obj.trns)
             
             colormap(Obj.cb1,legendColor);
