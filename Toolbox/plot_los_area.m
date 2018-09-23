@@ -1,6 +1,6 @@
-% Obj = LASCAR_Processed;
-% Obj.File = 'R:\SpecialCourseSafak\LASCAR_Data\20171114153902_PPI1_merged.txt';
-% Obj.set_data;
+Obj = LASCAR_Processed;
+Obj.File = 'R:\SpecialCourseSafak\LASCAR_Data\20171114153902_PPI1_merged.txt';
+Obj.set_data;
 angles = Obj.angAzm(31:60);
 xDist = Obj.gateRange*sind(angles)';
 yDist = Obj.gateRange*cosd(angles)';

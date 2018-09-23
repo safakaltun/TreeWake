@@ -678,39 +678,39 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
                 end
             end
             
-%             fig = figure(1001);
-%             
-%             clf(fig)
-%             fig.Position =  [0 113 658 824];
-%             Obj.ax6 = subplot(2,1,1);
-%             pc =  surf(Obj.ax6,xall./1E3,yall./1E3,velocity,colors);
-%             pc.EdgeColor = 'none';
-%             Obj.ax6.Color = 'none';
-%             Obj.ax6.GridColor = 'none';
-%             if Obj.wakeStatCheckOff.Value
-%                 title(Obj.ax6,['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, N = ' num2str(Obj.wakeChar_dir.nSample(Obj.currentStatDeg))]);
-%             else
-%                 title(Obj.ax6,time)
-%             end
-%             xlim(Obj.ax6,[693.2 695])
-%             ylim(Obj.ax6,[6175.2 6176.2])
-%             zlim(Obj.ax6,[0 30])
-%             caxis(Obj.ax6,[bounds(1) bounds(end)]);
-%             view(Obj.ax6,[0 90])
-%             daspect(Obj.ax6,[0.01  0.01 5])
-%             xlabel(Obj.ax6,'Easting [km]')
-%             ylabel(Obj.ax6,'Northing [km]')
-%             cb =colorbar(Obj.ax6,'Location','east','AxisLocation','out') ;
-%             cb.Label.String = 'Wind Speed [Normalized]';
-%             
-%             colormap(Obj.ax6,legendColor);
+            fig = figure(1001);
+            
+            clf(fig)
+            fig.Position =  [0 113 658 824];
+            Obj.ax6 = subplot(2,1,1);
+            pc =  surf(Obj.ax6,xall./1E3,yall./1E3,velocity,colors);
+            pc.EdgeColor = 'none';
+            Obj.ax6.Color = 'none';
+            Obj.ax6.GridColor = 'none';
+            if Obj.wakeStatCheckOff.Value
+                title(Obj.ax6,['Bin : ' num2str(Obj.wakeChar_dir.bin(1,Obj.currentStatDeg)) '\circ-' num2str(Obj.wakeChar_dir.bin(2,Obj.currentStatDeg)) '\circ, N = ' num2str(Obj.wakeChar_dir.nSample(Obj.currentStatDeg))]);
+            else
+                title(Obj.ax6,time)
+            end
+            xlim(Obj.ax6,[693.2 695])
+            ylim(Obj.ax6,[6175.2 6176.2])
+            zlim(Obj.ax6,[0 30])
+            caxis(Obj.ax6,[bounds(1) bounds(end)]);
+            view(Obj.ax6,[0 90])
+            daspect(Obj.ax6,[0.01  0.01 5])
+            xlabel(Obj.ax6,'Easting [km]')
+            ylabel(Obj.ax6,'Northing [km]')
+            cb =colorbar(Obj.ax6,'Location','east','AxisLocation','out') ;
+            cb.Label.String = 'Wind Speed [Normalized]';
+            
+            colormap(Obj.ax6,legendColor);
             
             Obj.pc =  surf(Obj.ax1,xall./1E3,yall./1E3,hall,colors);
-%             Obj.F = scatteredInterpolant([reshape(xall,[],1)./1E3,reshape(yall,[],1)./1E3],reshape(velocity,[],1),'linear','none');
+            Obj.F = scatteredInterpolant([reshape(xall,[],1)./1E3,reshape(yall,[],1)./1E3],reshape(velocity,[],1),'linear','none');
             
             Obj.pc.EdgeColor = 'none';
             title(Obj.ax1,time)
-%             Obj.draw_info;
+            Obj.draw_info;
             alpha(Obj.pc,Obj.trns)
             
             colormap(Obj.cb1,legendColor);
@@ -845,6 +845,16 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             %%
             
             angle = Obj.wakeChar_10min.dirValue1530(Obj.currentStatTime);
+           [ Obj.mastDat.Data.Wdir_44m.value(minDif)...
+            Obj.wakeChar_10min.dirValue1530(Obj.currentStatTime)...
+            Obj.wakeChar_10min.dirValue212(Obj.currentStatTime)...
+            Obj.wakeChar_10min.dirValueall(Obj.currentStatTime)...
+            Obj.mastDat.Data.Wsp_18m_mean.value(minDif)...
+            mean(Obj.wakeChar_10min.spdValue1530(68:82,Obj.currentStatTime))...
+            mean(Obj.wakeChar_10min.spdValue212(79:102,Obj.currentStatTime))...
+            mean(Obj.wakeChar_10min.spdValueall(79:102,Obj.currentStatTime))]
+            
+            
             
             tree = [6.93422e+05 6.175546e+06];
             dist = [6 10 15 20 30].*19;
@@ -1015,7 +1025,7 @@ classdef LASCAR_GUI < matlab.mixin.SetGet
             xlabel(sub,'Axial Distance from the Center of Tree [H: Tree Height]')
             ylabel(sub,'Wind Speed [Normalized]')
             ylim(sub,[0.4 1.1])
-            legend(Obj.ax6,Obj.ax6.Children(end-2:-5:end-21),{'Case 1','Case 2','Case 3','Mast'},'Location','north','Orientation','horizontal')
+            legend(Obj.ax6,Obj.ax6.Children(end-2:-5:end-21),{'Method A','Method B','Method C','Mast'},'Location','north','Orientation','horizontal')
             header =  [datestr(Obj.wakeChar_10min.time(Obj.currentStatTime),'yyyy-mm-dd HH:MM') ', Ri_{B} = ' num2str(Obj.mastDat.Data.Ri1870.value(minDif),'%2.10f') ', TI = ' num2str(Obj.mastDat.Data.TI_18m.value(minDif))  ', t_{ind} = ' num2str(Obj.currentStatTime)];
             title(Obj.ax6,header)
             
